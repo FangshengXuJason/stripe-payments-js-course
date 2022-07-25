@@ -1,18 +1,21 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore'
 
+// UPDATED!!!
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const firebaseConfig = {
-  apiKey: 'AIzaSyAUzu622-f23fl0LX1rf6nxzzy0MP5ERLA',
-  authDomain: 'stripe-js-course.firebaseapp.com',
-  databaseURL: 'https://stripe-js-course.firebaseio.com',
-  projectId: 'stripe-js-course',
-  storageBucket: 'stripe-js-course.appspot.com',
-  messagingSenderId: '84918842518',
-  appId: '1:84918842518:web:d23dedb546fd2e8ee63eb7',
-};
+  apiKey: 'AIzaSyBP2O_1_yZ2vRjHO-FXbc8T1yzISO0xa3c',
+  authDomain: 'test-project-1-d10d8.firebaseapp.com',
+  projectId: 'test-project-1-d10d8',
+  storageBucket: 'test-project-1-d10d8.appspot.com',
+  messagingSenderId: '67946379645',
+  appId: '1:67946379645:web:cfe571bfbbe2a86f25b414',
+  measurementId: 'G-3BCFY2YNPD',
+}
 
 firebase.initializeApp(firebaseConfig)
 
-export const db = firebase.firestore();
-export const auth = firebase.auth();
+export const db = firebase.firestore()
+export const auth = firebase.auth()
