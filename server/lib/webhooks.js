@@ -7,6 +7,11 @@ const firebase_admin_1 = require("firebase-admin");
  * Business logic for specific webhook event types
  */
 const webhookHandlers = {
+    'payment_intent.created': async (data) => {
+        // TODO fireship.io Missed this, figure out why
+        // Server prints when I do step 1 in the payment page
+        console.log('heard payment_inten.created from stripe, executing my business logic...');
+    },
     'checkout.session.completed': async (data) => {
         // Add your business logic here
     },
@@ -17,14 +22,18 @@ const webhookHandlers = {
         // Add your business logic here
     },
     'customer.subscription.deleted': async (data) => {
-        // Add your business logic here
-    },
-    'customer.subscription.created': async (data) => {
-        const customer = await _1.stripe.customers.retrieve(data.customer);
+        const customer = (await _1.stripe.customers.retrieve(data.customer));
         const userId = customer.metadata.firebaseUID;
         const userRef = firebase_1.db.collection('users').doc(userId);
-        await userRef
-            .update({
+        await userRef.update({
+            activePlans: firebase_admin_1.firestore.FieldValue.arrayRemove(data.plan.id),
+        });
+    },
+    'customer.subscription.created': async (data) => {
+        const customer = (await _1.stripe.customers.retrieve(data.customer));
+        const userId = customer.metadata.firebaseUID;
+        const userRef = firebase_1.db.collection('users').doc(userId);
+        await userRef.update({
             activePlans: firebase_admin_1.firestore.FieldValue.arrayUnion(data.plan.id),
         });
     },
@@ -32,10 +41,13 @@ const webhookHandlers = {
         // Add your business logic here
     },
     'invoice.payment_failed': async (data) => {
-        const customer = await _1.stripe.customers.retrieve(data.customer);
-        const userSnapshot = await firebase_1.db.collection('users').doc(customer.metadata.firebaseUID).get();
+        const customer = (await _1.stripe.customers.retrieve(data.customer));
+        const userSnapshot = await firebase_1.db
+            .collection('users')
+            .doc(customer.metadata.firebaseUID)
+            .get();
         await userSnapshot.ref.update({ status: 'PAST_DUE' });
-    }
+    },
 };
 /**
  * Validate the stripe webhook secret, then call the handler for the event type
@@ -49,7 +61,8 @@ exports.handleStripeWebhook = async (req, res) => {
     }
     catch (err) {
         console.error(err);
-        res.status(400).send(`Webhook Error: ${err.message}`);
+        // res.status(400).send(`Webhook Error: ${err.message}`);
+        res.status(400).send(`Webhook Error: ${err.message}`); // Hacky workaround
     }
 };
 //# sourceMappingURL=webhooks.js.map
