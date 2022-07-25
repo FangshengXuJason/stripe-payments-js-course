@@ -7,6 +7,13 @@ import { firestore } from 'firebase-admin'
  * Business logic for specific webhook event types
  */
 const webhookHandlers = {
+  'payment_intent.created': async (data: Stripe.PaymentIntent) => {
+    // TODO fireship.io Missed this, figure out why
+    // Server prints when I do step 1 in the payment page
+    console.log(
+      'heard payment_inten.created from stripe, executing my business logic...'
+    )
+  },
   'checkout.session.completed': async (data: Stripe.Event.Data) => {
     // Add your business logic here
   },
